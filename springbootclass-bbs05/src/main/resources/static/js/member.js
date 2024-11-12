@@ -5,7 +5,7 @@ $(function() {
 	
 	$("#id").on("keyup", function(){
 	
-		let regExp = /[^A-Za-Z0-9]/gi;
+		let regExp = /[^A-Za-z0-9]/gi;
 		if(regExp.test($(this).val())){
 			alert("영문 대소문자, 숫자만 입력할 수 있습니다.");
 			$(this).val($(this).val().replace(regExp, ""));
@@ -15,7 +15,7 @@ $(function() {
 	
 	$("#pass1").on("keyup", inputCharReplace);
 	$("#pass2").on("keyup", inputCharReplace);
-	$("#emaild").on("keyup", inputCharReplace);
+	$("#emaiId").on("keyup", inputCharReplace);
 	$("#emailDomain").on("keyup", inputEmailDomainReplace);
 	
 	// 회원 가입 폼에서 아이디 중복확인 버튼이 클릭되면
@@ -35,7 +35,7 @@ $(function() {
 			return false;
 		}
 		
-		window.open(url, "idCheck", "toolbar=no, scrollbars=no, resizeable=no,"
+		window.open(url, "idCheck", "toolbar=no, scrollbars=no, resizeable=no, "
 			+ "status=no, memubar=no, width=500, height=330");
 		
 		
@@ -83,7 +83,6 @@ $(function() {
 });
 
 function inputCharReplace() {
-	
 	let regExp = /[^A-Za-z0-9]/gi;
 	if(regExp.test($(this).val())) {
 		alert("영문 대소분자, 숫자만 입력할 수 있습니다.");
@@ -92,8 +91,7 @@ function inputCharReplace() {
 }
 
 function inputEmailDomainReplace() {
-	
-	let regExp = /[^A-z0-9\.]/gi;
+	let regExp = /[^a-z0-9\.]/gi;
 	if(regExp.test($(this).val())) {
 		alert("이메일 도메인은 영문 소문자, 숫자, 점(.)만 입력할 수 있습니다.");
 		$(this).val($(this).val().replace(regExp, ""));

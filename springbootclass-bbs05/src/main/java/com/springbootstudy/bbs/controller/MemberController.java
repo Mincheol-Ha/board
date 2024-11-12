@@ -26,6 +26,14 @@ public class MemberController {
 	@Autowired
 	private MemberService memberService;
 	
+	@GetMapping("overlapIdCheck")
+	public String overlapIdCheck(Model model, @RequestParam("id") String id) {
+		
+		model.addAttribute("id", id);
+		
+		return "member/overlapIdCheck.html";
+	}
+	
 	// "/memberlogout"으로 들어오는 GET방식 요청 처리 메서드
 	@GetMapping("memberLogout")
 	public String logout(HttpSession session) {
