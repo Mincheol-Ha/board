@@ -21,6 +21,27 @@ public class MemberService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	// 회원 정보를 MemberMapper를 이용해 회원 테이블에 저장하는 메서드
+	public void addMember(Member member) {
+		
+		//BCryptPasswordEncoder 객체를 이용해 비밀번호를 암호화한 후 저장
+		member.setPass(passwordEncoder.encode(member.getPass()));
+		log.info(member.getPass());
+		memberMapper.addMember(member);
+		
+	}
+	
+	
+	// 회원 가입시 아이디 붕족을 체크하는 메서드
+	public boolean overlapIdCheck(String id) {
+		Member member = memberMapper.getMember(id);
+		log.info("oerlapIdCheck - member : " + member);
+		if(member == null) {
+			return false;
+		}
+		return true;
+	}
+	
 	//회원 로그인 요청을 처리하고 결과를 반환하는 메서드
 	public int login(String id, String pass) {
 		//id가 존재하지 않으면 -1
