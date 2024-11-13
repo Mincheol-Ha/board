@@ -59,8 +59,8 @@ $(function() {
 	});
 	
 	//아이디 사용 버튼이 클릭외면 아이디를 부모창의 회원 가입 폼에 입력해 주는 함수
-	$("#btnCheckClose").on("click", function(){
-		let id = $(this).attr("date-id-value");
+	$("#btnIdCheckClose").on("click", function(){
+		let id = $(this).attr("data-id-value");
 		opener.document.joinForm.id.value = id;
 		opener.document.joinForm.isIdCheck.value = true;
 		window.close();
@@ -79,19 +79,19 @@ $(function() {
 			$("#emailDomain").prop("readonly", false);
 			
 		} else if(str == "네이버"){
-		$("#emailDomain").val("");
+		$("#emailDomain").val("naver.com");
 		$("#emailDomain").prop("readonly", true);
 			
 		} else if(str == "다음"){
-		$("#emailDomain").val("");
+		$("#emailDomain").val("daum.ne");
 		$("#emailDomain").prop("readonly", true);
 			
 		} else if(str == "한메일"){
-		$("#emailDomain").val("");
+		$("#emailDomain").val("hanmail.net");
 		$("#emailDomain").prop("readonly", true);
 			
 		} else if(str == "구글"){
-		$("#emailDomain").val("");
+		$("#emailDomain").val("gmail.com");
 		$("#emailDomain").prop("readonly", true);
 		
 		}
@@ -254,7 +254,7 @@ function findZipcode() {
 			// 건물명이 있고, 공동주택일 경우 추가한다.
 			if(data.buildingName !== '' && data.apartment === 'Y'){
 				extraAddr += (extraAddr !== '' ?
-								', ' + data.buildingNAme : data.buildingName);
+								', ' + data.buildingName : data.buildingName);
 			}
 			
 			if(extraAddr !== ''){
@@ -266,7 +266,7 @@ function findZipcode() {
 			
 			// 우편번호와 주소 정보를 해당 입력상자에 출력
 			$("#zipcode").val(data.zonecode);
-			$("#address").val(addr);
+			$("#address1").val(addr);
 			
 			$("#adress2").focus();
 			
