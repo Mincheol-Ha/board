@@ -20,6 +20,8 @@ public class BoardService {
 	// DB 작업에 필요한 BoardMapper 객체를 의존성 주입 설정 
 	@Autowired
 	private BoardMapper boardMapper;
+	
+	
 		
 	// 한 페이지에 출력할 게시글의 수를 상수로 선언
 	private static final int PAGE_SIZE = 20;

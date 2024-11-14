@@ -28,6 +28,12 @@ public class MemberController {
 	@Autowired
 	private MemberService memberService;
 	
+	@GetMapping("/memberUpdateForm")
+	public String updateForm(Model model, HttpSession session) {
+		// 로그인 처리를 할 때 세션 영역에 회원 정보를 저장했기 떄문에 뷰의 정보만 반환한다
+		return "member/memberUpdateForm";
+	}
+	
 	@PostMapping("/joinResult")
 	public String joinResult(Model model, Member member,
 			@RequestParam("pass1") String pass1,
