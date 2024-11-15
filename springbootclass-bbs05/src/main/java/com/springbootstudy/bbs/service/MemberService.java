@@ -21,6 +21,16 @@ public class MemberService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	// 회원 정보를 MemberMapper를 이용해 회원 테이블에서 수정하는 메서드
+	public void updateMember(Member member) {
+		
+		//BCryptPasswordEncoder 객체를 이용해 비밀번호를 암호회 한 후 저장
+		member.setPass(passwordEncoder.encode(member.getPass()));
+		log.info(member.getPass());
+		
+		memberMapper.updateMember(member);
+	}
+	
 	
 	// 회원 정보 수정 시에 기존 비밀번호가 맞는지 체크하는 메서드
 		public boolean memberPassCheck(String id, String pass) {
