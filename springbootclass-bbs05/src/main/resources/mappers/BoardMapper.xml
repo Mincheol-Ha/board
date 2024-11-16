@@ -13,6 +13,27 @@
 -->
 <mapper namespace="com.springbootstudy.bbs.mapper.BoardMapper" >
 
+	<!-- 게시글 번호에 해당하는 댓글 리스트를 가져오는 맵핑 구문
+		테이블의 컬럼명은 일반적으로 언더스코러 표기법("_")을 사용하는 경우가
+		많고 클래스의 인스턴스 맴버는 카멜표기법을 사용한다.
+		테이블의 컬럼명과 도메인 클래스의 프로퍼티 이름이 다른 경우 아래와 같이
+		SELECT쿼리에 별칭을 사용해 도메인 클래스의 프러퍼티 이름과 동일하게
+		맞춰서 조회할 수도 있다.  -->
+
+	<select id="replyList" resultType="Reply">
+		SELECT
+			no,
+			bbs_no AS bbsNo,
+			reply_content AS replyContent,
+			reply_writer AS replyWriter,
+			reg_date AS regDate,
+		FROM reply
+		WHERE bbs_no = #{no}
+			ORDER BY no DESC
+		
+	</select>
+
+
 	<!--
 		한 페이지에 해당하는 게시글 리스트, 검색리스트를 가져오는 맵핑 구문
 		
