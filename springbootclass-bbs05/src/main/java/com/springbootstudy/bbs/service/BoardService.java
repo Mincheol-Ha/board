@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springbootstudy.bbs.domain.Board;
+import com.springbootstudy.bbs.domain.Reply;
 import com.springbootstudy.bbs.mapper.BoardMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +22,11 @@ public class BoardService {
 	@Autowired
 	private BoardMapper boardMapper;
 	
+	// 게시글 번호에 해당하는 댓글 리스트를 반환하는 메서드
+	public List<Reply> replyList(int no) {
+		return boardMapper.replyList(no);
+	}
 	
-		
 	// 한 페이지에 출력할 게시글의 수를 상수로 선언
 	private static final int PAGE_SIZE = 20;
 	

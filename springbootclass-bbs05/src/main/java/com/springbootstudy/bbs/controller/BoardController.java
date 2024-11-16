@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.springbootstudy.bbs.domain.Board;
+import com.springbootstudy.bbs.domain.Reply;
 import com.springbootstudy.bbs.service.BoardService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -141,6 +143,10 @@ public class BoardController {
 		model.addAttribute("board", board);
 		model.addAttribute("pageNum", pageNum);
 		model.addAttribute("searchOption", searchOption);
+		
+		// 현재 게시글 번호에 해당하는 댓글 리스트를 가져와 모델에 저장한다
+		List<Reply> replyList = boardService.replyList(no);
+		model.addAttribute("replyList", replyList);
 		
 		// 검색 요청이면 type과 keyword를 모델에 저장한다.
 		if(searchOption) {

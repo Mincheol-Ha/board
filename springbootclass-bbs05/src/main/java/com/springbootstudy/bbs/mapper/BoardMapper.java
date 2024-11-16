@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.springbootstudy.bbs.domain.Board;
+import com.springbootstudy.bbs.domain.Reply;
 
 /* 이전에는 DAO(Data Access Object) 클래스에 @Repository 애노테이션을
  * 적용하여 해당 클래스가 DB 작업을 하는 클래스 임을 명시하고
@@ -39,6 +40,9 @@ public interface BoardMapper {
 	public List<Board> boardList(
 			@Param("startRow") int startRow, @Param("num") int num,
 			@Param("type") String type, @Param("keyword") String keyword);
+	
+	// 게시글 번호에 해당하는 댓글 리스트를 읽어봐 반환하는 메서드
+	public List<Reply> replyList(int no);
 
 	// DB 테이블에서 전체 게시글 수 또는 검색 게시글 수를 읽어와 반환하는 메서드	 
 	public int getBoardCount(
