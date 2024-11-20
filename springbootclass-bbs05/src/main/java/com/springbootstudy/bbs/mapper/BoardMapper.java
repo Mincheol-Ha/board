@@ -41,6 +41,8 @@ public interface BoardMapper {
 			@Param("startRow") int startRow, @Param("num") int num,
 			@Param("type") String type, @Param("keyword") String keyword);
 	
+
+	
 	// 게시글 번호에 해당하는 댓글 리스트를 읽어봐 반환하는 메서드
 	public List<Reply> replyList(int no);
 
@@ -56,6 +58,13 @@ public interface BoardMapper {
 		
 	// no에 해당하는 비밀번호를 DB 테이블에서 읽어와 반환하는 메서드
 	public String isPassCheck(int no);
+	
+	// 게시글 번호에 해당하는 추천/땡큐를 업데이트 하는 메서드
+	public void updateRecommend(
+			@Param("no") int no, @Param("recommend") String recommend);
+	
+	// 게시글 번호에 해당하는 추천/땡큐 정보흫 읽어와 반환하는 메서드
+	public Board getRecommend(int no);
 		
 	// 수정된 게시글을 Board 객체로 받아서 DB 테이블에서 수정하는 메서드
 	public void updateBoard(Board board);	

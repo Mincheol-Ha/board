@@ -13,6 +13,34 @@
 -->
 <mapper namespace="com.springbootstudy.bbs.mapper.BoardMapper" >
 
+	<!-- 추천/땡큐 정보를 업데이트 하는 맵핑 구문 -->
+	<update id="updateRecommend">
+		UPDATE springbbs
+			SET
+			<if test="recommend == 'commend'">		
+				recommend=recommend + 1
+			</if>
+			<if test="recommend == 'thank'">
+				thank = thank + 1
+			</if>
+		WHERE no = #{no}
+	</update>
+	<!--
+		추천/땡큐 정보를 가져오는 맵핑 구문
+		
+		추천/땡큐 두 가지 정보를 반화할 경우에는 객체 타입으로 반환하는 것이 
+		일반적이지만 새로운 클래스를 만들지 않고 Board 클래스에 이 두 정보를
+		저장할 수 있는 프로퍼티가 있어서 Board 객체로 반환되도록 했다.	  
+	-->
+	<select id="getRecommend" resultType="Board">
+		SELECT recommend, thank
+		FROM springbbs
+		WHERE no = #{no}
+	</select>
+
+
+
+
 	<!-- 게시글 번호에 해당하는 댓글 리스트를 가져오는 맵핑 구문
 		테이블의 컬럼명은 일반적으로 언더스코러 표기법("_")을 사용하는 경우가
 		많고 클래스의 인스턴스 맴버는 카멜표기법을 사용한다.
