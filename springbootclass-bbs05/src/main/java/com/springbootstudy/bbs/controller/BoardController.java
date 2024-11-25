@@ -35,55 +35,12 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
 public class BoardController {
-	
-	
+
 	// 업로드한 파일을 저장할 폴더 위치를 상수로 선언하고 있다.
 	private static final String DEFAULT_PATH = "src/main/resources/static/files/";	
 	
 	@Autowired
 	private BoardService boardService;	
-	
-	
-	@GetMapping("/fileDownload")
-	public void download(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		
-		String fileName = request.getParameter("fileName");
-		log.info("fileName : " + fileName);
-		
-		File parent = new File(DEFAULT_PATH);
-		File file = new File(parent.getAbsolutePath(), fileName);
-		log.info("file.getName() : " + file.getName());
-		
-		//응답 데이터에 파일 다운로드 관련 컨텐츠 타입 설정이 필요하다
-		response.setContentType("application/download; charset=UTF-8");
-		response.setContentLength((int) file.length());
-		
-		//한글 파일 명을 클라이언트로 바로 내려보내기 때문에 URLEncoding이 필요하다
-		fileName = URLEncoder.encode(file.getName(), "UTF-8");
-		log.info("다운로드 fileName : " + fileName);
-		
-		//전송되는 파일 이름을 한글 그대(원본 파일이름 그래도)로 보내주기 위한 설정
-		response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName +"\";");
-		
-		// 파일로 전송되야 하르모 전송되는 데이터 인코딩은 바이너리로 설정해야 한다
-		response.setHeader("Content-Transfer-Encoding", "binary");
-		
-		OutputStream out = response.getOutputStream();
-		FileInputStream fis = null;
-		
-		fis = new FileInputStream(file);
-		
-		FileCopyUtils.copy(fis,  out);
-		
-		if(fis != null) {
-			fis.close();
-		}
-		
-		out.flush();
-	}
-	
-	
 	
 	/* 게시글 리스트 요청을 처리하는 메서드
 	 * "/", "/boardList" 로 들어오는 HTTP GET 요청을 처리하는 메서드
@@ -144,7 +101,7 @@ public class BoardController {
 		model.addAttribute("pageNum", pageNum);
 		model.addAttribute("searchOption", searchOption);
 		
-		// 현재 게시글 번호에 해당하는 댓글 리스트를 가져와 모델에 저장한다
+		// 현재 게시글 번호에 해당하는 댓글 리스트를 가져와 모델에 저장한다.
 		List<Reply> replyList = boardService.replyList(no);
 		model.addAttribute("replyList", replyList);
 		
@@ -183,32 +140,33 @@ public class BoardController {
         	File parent = new File(DEFAULT_PATH);
         	
            	// 파일 업로드 위치에 폴더가 존재하지 않으면 폴더 생성
-        	if( !parent.isDirectory() &&!parent.exists())	{
-        		parent.mkdirs();
-        	}
-        	
-        	UUID uid = UUID.randomUUID();
-        	String extension = StringUtils.getFilenameExtension(
-        									multipartFile.getOriginalFilename());
-        	String saveName = uid.toString() + "." + extension;
-        	
-        	File file =new File(parent.getAbsolutePath(), saveName);
-        	// File 객체를 이용해 파일이 저장될때 절대 경로 출력
-        	log.info("file abs path : " + file.getAbsolutePath());
-        	log.info("file path : " + file.getPath());
-        	
-        	// 업로드 되는 파일을 static/files 폴더에 복사한다.
-          	multipartFile.transferTo(file);
-        	
-        	//업로드된 파일 이름을 게시글의 첨부 파일로 설정한다.
-        	board.setFile1(saveName);
-        	
-           	} else {
-           		log.info("No file uploaded - 파일이 업로드 된지 않음");
+           	if (!parent.isDirectory() && !parent.exists()) {
+           		parent.mkdirs();
            	}
-        
-              boardService.addBoard(board);
               
+           	UUID uid = UUID.randomUUID();
+            String extension = StringUtils.getFilenameExtension(
+            								multipartFile.getOriginalFilename());
+          	String saveName = uid.toString() + "." + extension;
+          	
+          	File file = new File(parent.getAbsolutePath(), saveName);
+          	// File 객체를 이용해 파일이 저장될 절대 경로 출력
+          	log.info("file abs path : " + file.getAbsolutePath());
+          	log.info("file path : " + file.getPath());
+          	
+          	// 업로드 되는 파일을 static/files 폴더에 복사한다.
+          	multipartFile.transferTo(file);
+          	
+          	// 업로드된 파일 이름을 게시글의 첨부 파일로 설정한다.
+          	board.setFile1(saveName);
+          	
+          } else {
+          	// 파일이 업로드 되지 않으면 콘솔에 로그 출력
+          	log.info("No file uploaded - 파일이 업로드 되지 않음");
+          	
+          }
+        
+		boardService.addBoard(board);
 		
 		// 게시글 쓰기가 완료되면 게시글 리스트로 리다이렉트 시킨다.
 		return "redirect:boardList";
@@ -368,4 +326,54 @@ public class BoardController {
 		// 게시 글 삭제가 완료되면 게시글 리스트로 리다이렉트 시킨다.
 		return "redirect:boardList";		
 	}
+
+	// 게시글 상세보기에서 들어오는 파일 다운로드 요청을 처리하는 메서드	
+	@GetMapping("/fileDownload")
+	public void download(HttpServletRequest request, 
+			HttpServletResponse response) throws Exception {
+
+		String fileName = request.getParameter("fileName");
+		log.info("fileName : " + fileName);
+		
+		File parent = new File(DEFAULT_PATH);		
+		File file = new File(parent.getAbsolutePath(), fileName);
+		log.info("file.getName() : " + file.getName());
+		
+		// 응답 데이터에 파일 다운로드 관련 컨텐츠 타입 설정이 필요하다.
+		response.setContentType("application/download; charset=UTF-8");
+		response.setContentLength((int) file.length());
+		
+		// 한글 파일명을 클라이언트로 바로 내려보내기 때문에 URLEncoding이 필요하다.
+		fileName = URLEncoder.encode(file.getName(), "UTF-8");
+		log.info("다운로드 fileName : " + fileName);
+		
+		// 전송되는 파일 이름을 한글 그대(원본 파일 이름 그대로)로 보내주기 위한 설정이다.
+		response.setHeader("Content-Disposition", 
+				"attachment; filename=\"" + fileName + "\";");
+		
+		// 파일로 전송되야 하므로 전송되는 데이터 인코딩은 바이너리로 설정해야 한다.
+		response.setHeader("Content-Transfer-Encoding", "binary");
+		
+		// 파일을 클라이언트로 보내기 위해 응답 스트림을 구한다.
+		OutputStream out = response.getOutputStream();
+		FileInputStream fis = null;
+		
+		/* FileInputStream을 통해 클라이언트로 보낼 파일을 읽어
+		 * 스프링이 제공하는 FileCopyUtils 클래스를 통해서
+		 * 데이터를 읽고 응답 스트림을 통해 클라이언트로 출력한다.
+		 **/
+		fis = new FileInputStream(file);
+
+		// 스프링이 제공하는 FileCopyUtils를 이용해 응답 스트림에 파일을 복사한다.
+		FileCopyUtils.copy(fis,  out);
+		
+		if(fis != null) {
+			fis.close();
+		}
+		
+		/* 파일 데이터를 클라이언트로 출력한다.
+		 * 버퍼에 남아 있는 모든 데이터를 클라이언드로 출력한다.
+		 **/
+		out.flush();	
+	}	
 }

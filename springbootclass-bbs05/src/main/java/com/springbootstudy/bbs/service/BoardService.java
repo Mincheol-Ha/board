@@ -21,8 +21,7 @@ public class BoardService {
 	// DB 작업에 필요한 BoardMapper 객체를 의존성 주입 설정 
 	@Autowired
 	private BoardMapper boardMapper;
-	
-
+		
 	// 한 페이지에 출력할 게시글의 수를 상수로 선언
 	private static final int PAGE_SIZE = 20;
 	
@@ -190,9 +189,8 @@ public class BoardService {
 	public void deleteBoard(int no) {
 		log.info("BoardService: deleteBoard(int no)");
 		boardMapper.deleteBoard(no);
-	}	
-	
-	
+	}
+
 	// 게시글 번호에 해당하는 댓글 리스트를 반환하는 메서드
 	public List<Reply> replyList(int no) {
 		return boardMapper.replyList(no);
@@ -204,10 +202,24 @@ public class BoardService {
 		boardMapper.updateRecommend(no, recommend);
 		Board board = boardMapper.getRecommend(no);
 		
-		Map<String, Integer> map = new HashMap<String, Integer>();
+		Map<String, Integer> map = new HashMap<String, Integer>(); 
 		map.put("recommend", board.getRecommend());
 		map.put("thank", board.getThank());
 		return map;
 	}
+	
+	// 현재 게시글에 해당하는 댓글을 등록하는 메서드
+	public void addReply(Reply reply) {
+		boardMapper.addReply(reply);
+	}
+	
+	// 댓글 번호에 해당하는 댓글을 수정하는 메서드
+	public void updateReply(Reply reply) {
+		boardMapper.updateReply(reply);
+	}
 
+	// 댓글 번호에 해당하는 댓글을 삭제하는 메서드
+	public void deleteReply(int no) {
+		boardMapper.deleteReply(no);
+	}	
 }

@@ -13,54 +13,7 @@
 -->
 <mapper namespace="com.springbootstudy.bbs.mapper.BoardMapper" >
 
-	<!-- 추천/땡큐 정보를 업데이트 하는 맵핑 구문 -->
-	<update id="updateRecommend">
-		UPDATE springbbs
-			SET
-			<if test="recommend == 'commend'">		
-				recommend=recommend + 1
-			</if>
-			<if test="recommend == 'thank'">
-				thank = thank + 1
-			</if>
-		WHERE no = #{no}
-	</update>
-	<!--
-		추천/땡큐 정보를 가져오는 맵핑 구문
-		
-		추천/땡큐 두 가지 정보를 반화할 경우에는 객체 타입으로 반환하는 것이 
-		일반적이지만 새로운 클래스를 만들지 않고 Board 클래스에 이 두 정보를
-		저장할 수 있는 프로퍼티가 있어서 Board 객체로 반환되도록 했다.	  
-	-->
-	<select id="getRecommend" resultType="Board">
-		SELECT recommend, thank
-		FROM springbbs
-		WHERE no = #{no}
-	</select>
-
-
-
-
-	<!-- 게시글 번호에 해당하는 댓글 리스트를 가져오는 맵핑 구문
-		테이블의 컬럼명은 일반적으로 언더스코러 표기법("_")을 사용하는 경우가
-		많고 클래스의 인스턴스 맴버는 카멜표기법을 사용한다.
-		테이블의 컬럼명과 도메인 클래스의 프로퍼티 이름이 다른 경우 아래와 같이
-		SELECT쿼리에 별칭을 사용해 도메인 클래스의 프러퍼티 이름과 동일하게
-		맞춰서 조회할 수도 있다.  -->
-
-	<select id="replyList" resultType="Reply">
-		SELECT
-			no,
-			bbs_no AS bbsNo,
-			reply_content AS replyContent,
-			reply_writer AS replyWriter,
-			reg_date AS regDate
-		FROM reply
-		WHERE bbs_no = #{no}
-			ORDER BY no DESC
-		
-	</select>
-
+	
 
 	<!--
 		한 페이지에 해당하는 게시글 리스트, 검색리스트를 가져오는 맵핑 구문
@@ -90,7 +43,9 @@
 			reg_date AS regDate,
 			read_count AS readCount,
 			pass,
-			file1 
+			file1,
+			recommend,
+			thank 
 		FROM springbbs
 		<!-- 
 			WHERE 절을 동적으로 생성하는 요소
@@ -308,6 +263,92 @@
 		WHERE no = #{no}
 	</update>
 
+	<!--
+		게시글 번호에 해당하는 댓글 리스트를 가져오는 맵핑 구문
+		테이블의 컬럼명은 일반적으로 언더스코어 표기법("_")을 사용하는 경우가
+		많고 클래스의 인스턴스 맴버는 카멜표기법을 사용한다.
+		테이블의 컬럼명과 도메인 클래스의 프로퍼티 이름이 다른 경우 아래와 같이
+		SELECT 쿼리에 별칭을 사용해 도메인 클래스의 프로퍼티 이름과 동일하게
+		맞춰서 조회할 수도 있다.
+	-->
+	<select id="replyList" resultType="Reply">
+		SELECT 
+			no,
+			bbs_no AS bbsNo,
+			reply_content AS replyContent,
+			reply_writer AS replyWriter,
+			reg_date AS regDate
+		FROM reply
+		WHERE bbs_no = #{no}
+			ORDER BY no DESC
+	</select>
+
+	<!--
+		추천/땡큐 정보를 업데이트하는 맵핑 구문
+		
+		SET 절에 <if> 태그를 사용해 추천 또는 땡큐 요청인지를 판단해 추천일 때는
+		추천 정보를 업데이트하고 땡큐 일 때는 땡큐 정보를 업데이트 할 수 있도록
+		동적 SQL로 맵핑 구문을 작성했다.
+		
+		SQL 파라미터로 사용할 데이터가 여러 개라서 BoardMapper 인터페이스에서
+		@Param("파라미터 이름") 애노테이션을 사용해 Map 객체로 전달되도록
+		하였다. 이렇게 전달된 파라미터를 조건절에서 사용할 때는 #{}를 사용하지
+		않고 파라미터 이름만 지정해야 하며 문자열을 사용할 때는 쌍 따옴표("")나
+		홑 따옴표('')로 감싸줘야 한다.
+		
+		Map에 저장한 데이터가 int와 같은 자바 기본 형과 String 데이터이므로
+		parameterType을 생략할 수 있다.
+	-->
+	<update id="updateRecommend">
+		UPDATE springbbs
+			SET
+			<if test="recommend == 'commend'">		
+				recommend=recommend + 1
+			</if>
+			<if test="recommend == 'thank'">
+				thank = thank + 1
+			</if>
+		WHERE no = #{no}
+	</update>
+	
+	<!--
+		추천/땡큐 정보를 가져오는 맵핑 구문
+		
+		추천/땡큐 두 가지 정보를 반화할 경우에는 객체 타입으로 반환하는 것이 
+		일반적이지만 새로운 클래스를 만들지 않고 Board 클래스에 이 두 정보를
+		저장할 수 있는 프로퍼티가 있어서 Board 객체로 반환되도록 했다.	  
+	-->
+	<select id="getRecommend" resultType="Board">
+		SELECT recommend, thank
+		FROM springbbs
+		WHERE no = #{no}
+	</select>
+
+	<!--
+		댓글을 추가하는 맵핑 구문		  
+	-->
+	<insert id="addReply" parameterType="Reply">
+		INSERT INTO reply(bbs_no, reply_content, reply_writer, reg_date)
+		VALUES(#{bbsNo}, #{replyContent}, #{replyWriter}, SYSDATE())
+	</insert>
+
+	<!--
+		댓글을 수정하는 맵핑 구문		  
+	-->
+	<update id="updateReply" parameterType="Reply">
+		UPDATE reply
+			SET reply_content = #{replyContent}, 
+				reg_date = SYSDATE()
+		WHERE no = #{no}
+	</update>
+
+	<!--
+		댓글을 삭제하는 맵핑 구문		  
+	-->
+	<delete id="deleteReply">
+		DELETE FROM reply
+		WHERE no = #{no}
+	</delete>
 </mapper>	
 
 

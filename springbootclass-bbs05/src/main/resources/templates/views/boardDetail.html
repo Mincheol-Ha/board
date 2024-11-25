@@ -26,7 +26,7 @@
 						검색 리스트에서 들어온 요청일 경우 다시 keyword에 해당하는 
 						검색 리스트로 돌려보내기 위해서 아래의 파라미터가 필요하다.  
 					*/-->
-					<th:block th:if="${searchOption}">
+					<th:block th:if=${searchOption}>
 						<input type="hidden" name="type" th:value="${ type }" />
 						<input type="hidden" name="keyword" th:value="${ keyword }" />
 					</th:block>					
@@ -48,7 +48,7 @@
 									<th>글쓴이</th>
 									<td th:text="${board.writer}"></td>
 									<th>작성일</th>
-									<td>[[${ #dates.format(board.regDate, 'yyyy-MM-dd HH:mm:ss') }]]</td>		
+									<td>[[${ #dates.format(board.regDate, 'yyyy-MM-dd HH:mm:dd') }]]</td>		
 								</tr>
 								<tr>		
 									<th>비밀번호</th>
@@ -145,9 +145,6 @@
 										</button>
 										<button class="deleteReply btn btn-outline-warning btn-sm" th:data-no="${reply.no}">
 											<i class="bi bi-trash">삭제</i>
-										</button>
-										<button class="btn btn-outline-danger btn-sm" th:onclick="reportReply('${reply.no}')">
-											<i class="bi bi-telephone-outbound">신고</i>									
 										</button>
 									</div>
 								</div>	
